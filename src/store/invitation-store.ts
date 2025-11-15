@@ -133,7 +133,7 @@ export const useInvitationStore = create<InvitationStore>((set, get) => ({
 
   bindUser: async (code: string, email: string) => {
     try {
-      await bindPromotionCode({
+      const response = await bindPromotionCode({
         promotionCode: code,
         email: email,
       });
@@ -145,7 +145,7 @@ export const useInvitationStore = create<InvitationStore>((set, get) => ({
           c.code === code
             ? {
                 ...c,
-                boundToUserId: email,
+                boundToUserId: response.userId,
                 bindingDate: newBindingDate,
               }
             : c
@@ -194,4 +194,3 @@ export const useInvitationStore = create<InvitationStore>((set, get) => ({
     return codes.filter((code) => code.code.toLowerCase().includes(query));
   },
 }));
-

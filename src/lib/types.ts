@@ -52,6 +52,7 @@ export type BindPromotionCodeRequest = {
 export type PromotionCodeOperationResponse = {
   success: boolean;
   message: string;
+  userId: string;
 };
 
 export type GetUserPromotionCodeRequest = {

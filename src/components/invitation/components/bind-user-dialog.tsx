@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,6 +17,7 @@ import { useInvitationStore } from "@/store/invitation-store";
 
 export function BindUserDialog() {
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const {
     selectedCode,
     isBindUserOpen,
@@ -39,6 +41,7 @@ export function BindUserDialog() {
       return;
     }
 
+    setIsLoading(true);
     try {
       await bindUser(selectedCode.code, bindUserEmail.trim());
 
@@ -57,6 +60,8 @@ export function BindUserDialog() {
         title: "绑定失败",
         description: "无法将邀请码绑定到用户。",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,15 +90,17 @@ export function BindUserDialog() {
                 onChange={(e) => setBindUserEmail(e.target.value)}
                 className="col-span-3 font-mono"
                 placeholder="hello@gmail.com"
+                disabled={isLoading}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">保存更改</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "绑定中..." : "保存更改"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
 }
-
