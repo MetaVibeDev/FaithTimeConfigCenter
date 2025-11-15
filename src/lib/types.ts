@@ -1,4 +1,3 @@
-
 export type InvitationCode = {
   id: string;
   code: string;
@@ -16,6 +15,11 @@ export type SimpleUserInfo = {
   avatarUrl?: string;
   isVip?: boolean;
   email?: string;
+};
+
+export type UserInfo = {
+  status: boolean;
+  userInfo: SimpleUserInfo;
 };
 
 export type PromotionCode = {
@@ -40,8 +44,9 @@ export type GeneratePromotionCodesResponse = {
 };
 
 export type BindPromotionCodeRequest = {
-  userId: string;
+  userId?: string;
   promotionCode: string;
+  email: string;
 };
 
 export type PromotionCodeOperationResponse = {
