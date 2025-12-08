@@ -1,3 +1,5 @@
+"use client";
+
 import {
   SidebarProvider,
   Sidebar,
@@ -9,11 +11,15 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Code, BotMessageSquare } from "lucide-react";
+import { Code, BotMessageSquare, Bell } from "lucide-react";
 import type { ReactNode } from "react";
-import Link from 'next/link';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { PageHelper } from "./page-helper";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -26,20 +32,34 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive>
+              <SidebarMenuButton asChild isActive={pathname === "/"}>
                 <Link href="/">
                   <Code />
                   <span>邀请码</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            {/* Future navigation items can be added here */}
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === "/notifications"}
+              >
+                <Link href="/notifications">
+                  <Bell />
+                  <span>通知管理</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>
       <SidebarInset>
-        <header className="flex items-center border-b h-14 px-4">
+        <header className="flex h-16 items-center gap-4 border-b bg-background/95 px-6 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <SidebarTrigger />
+          <PageHelper />
+          <div className="flex-1">
+            {/* Breadcrumbs or page title could go here */}
+          </div>
           {/* We can add more header items here like a user menu */}
         </header>
         <main>{children}</main>

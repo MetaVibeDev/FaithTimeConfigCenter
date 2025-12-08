@@ -1,0 +1,143 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { CircleHelp } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+const HELP_CONTENTS: Record<
+  string,
+  { title: string; description: string; content: React.ReactNode }
+> = {
+  "/": {
+    title: "邀请码管理说明",
+    description: "了解如何管理和追踪邀请码",
+    content: (
+      <div className="space-y-6 text-sm">
+        <section>
+          <h3 className="font-semibold text-base mb-2">查看邀请码列表</h3>
+          <p className="text-muted-foreground">
+            主界面展示所有邀请码的详细信息，包括：
+          </p>
+          <ul className="list-disc pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li><strong>邀请码</strong>：唯一的邀请码字符串</li>
+            <li><strong>状态</strong>：是否冻结</li>
+            <li><strong>推广次数</strong>：成功推广的用户数量</li>
+            <li><strong>绑定用户</strong>：邀请码绑定的用户</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">搜索邀请码</h3>
+          <p className="text-muted-foreground">
+            在页面顶部的搜索框中输入邀请码的全部或部分内容，系统会实时过滤并显示匹配的结果。
+          </p>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">绑定用户</h3>
+          <p className="text-muted-foreground">将邀请码绑定到特定用户：</p>
+          <ol className="list-decimal pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li>在列表中找到目标邀请码</li>
+            <li>点击该行的"绑定用户"按钮</li>
+            <li>在弹出的对话框中输入用户的邮箱地址</li>
+            <li>点击"绑定"按钮完成操作</li>
+          </ol>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">冻结邀请码</h3>
+          <p className="text-muted-foreground">
+            点击"冻结"按钮可停用邀请码。冻结后的邀请码无法再被新用户使用，但仍可查看历史推广记录。
+          </p>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">查看推广用户</h3>
+          <p className="text-muted-foreground">
+            点击"推广次数"列中的数字（蓝色），可在右侧侧边栏查看该邀请码推广的所有用户列表。
+          </p>
+        </section>
+      </div>
+    ),
+  },
+  "/notifications": {
+    title: "通知管理说明",
+    description: "了解如何发送站内信和版本更新",
+    content: (
+      <div className="space-y-6 text-sm">
+        <section>
+          <h3 className="font-semibold text-base mb-2">功能概览</h3>
+          <p className="text-muted-foreground">
+            通知管理模块允许您向用户发送两种类型的通知：
+          </p>
+          <ul className="list-disc pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li><strong>站内信</strong>：一般性的消息通知</li>
+            <li><strong>版本更新</strong>：应用版本更新提示</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">发送站内信</h3>
+          <ol className="list-decimal pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li>点击"站内信"标签页</li>
+            <li>填写<strong>标题</strong>和<strong>内容</strong></li>
+            <li>设置接收规则（如全部用户或特定用户）</li>
+            <li>点击发送按钮</li>
+          </ol>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">发布版本更新</h3>
+          <ol className="list-decimal pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li>点击"版本更新"标签页</li>
+            <li>输入<strong>版本号</strong>（例如 1.0.1）</li>
+            <li>填写<strong>更新日志</strong>，描述更新内容</li>
+            <li>选择是否<strong>强制更新</strong></li>
+            <li>提供下载链接或其他必要信息</li>
+            <li>点击发布按钮</li>
+          </ol>
+        </section>
+      </div>
+    ),
+  },
+};
+
+export function PageHelper() {
+  const pathname = usePathname();
+  const helpContent = HELP_CONTENTS[pathname];
+
+  if (!helpContent) {
+    return null;
+  }
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="sm" className="gap-2">
+          <CircleHelp className="h-4 w-4" />
+          <span className="hidden md:inline">页面帮助</span>
+          <span className="md:hidden">帮助</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="w-[400px] sm:w-[540px]">
+        <SheetHeader className="mb-6">
+          <SheetTitle>{helpContent.title}</SheetTitle>
+          <SheetDescription>{helpContent.description}</SheetDescription>
+        </SheetHeader>
+        <ScrollArea className="h-[calc(100vh-120px)] pr-4">
+          {helpContent.content}
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
