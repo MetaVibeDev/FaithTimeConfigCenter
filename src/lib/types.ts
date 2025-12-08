@@ -123,3 +123,25 @@ export type GetPromotedUsersResponse = {
   promotedUsers: PromotedUserDetail[];
   totalCount: number;
 };
+
+// Notification Types
+export type InAppNotificationRequest = {
+  type: 0;
+  content: string;
+  title: string;
+  userIds?: string[];
+};
+
+export type VersionUpdateNotificationRequest = {
+  type: 1;
+  content: string;
+  metadata: {
+    version: string;
+    isForceUpdate: string; // "true" or "false"
+    isChristmas?: string; // "true" or "false"
+  };
+};
+
+export type SendNotificationRequest =
+  | InAppNotificationRequest
+  | VersionUpdateNotificationRequest;

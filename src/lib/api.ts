@@ -18,9 +18,11 @@ import type {
   GetPromotedUsersRequest,
   GetPromotedUsersResponse,
   UserInfo,
+  SendNotificationRequest,
 } from "./types";
 
 const API_BASE_URL = "/api/user";
+const NOTIFICATION_API_URL = "/api/notification";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -178,4 +180,14 @@ export async function getUserProfile(userId: string): Promise<UserInfo> {
     },
     userId
   );
+}
+
+export async function sendNotification(data: SendNotificationRequest): Promise<any> {
+  // Create a config object that overrides the baseURL
+  return requestWithUserId({
+    baseURL: "/", // Reset base URL so we can use absolute path from root
+    url: "api/notification/inapp",
+    method: "POST",
+    data,
+  });
 }

@@ -37,6 +37,13 @@ const nextConfig: NextConfig = {
         destination: "https://main-service-prod.metavibe-api.com/user/:path*",
         // destination: "http://localhost:5000/user/:path*",
       },
+      {
+        source: "/api/notification/:path*",
+        destination:
+          "https://main-service-dev.metavibe-api.com/notification/:path*",
+          // "https://main-service-prod.metavibe-api.com/notification/:path*",
+          // "http://localhost:5000/notification/:path*",
+      },
     ];
   },
 };
