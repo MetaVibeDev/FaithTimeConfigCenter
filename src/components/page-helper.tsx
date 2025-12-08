@@ -28,10 +28,18 @@ const HELP_CONTENTS: Record<
             主界面展示所有邀请码的详细信息，包括：
           </p>
           <ul className="list-disc pl-4 mt-2 space-y-1 text-muted-foreground">
-            <li><strong>邀请码</strong>：唯一的邀请码字符串</li>
-            <li><strong>状态</strong>：是否冻结</li>
-            <li><strong>推广次数</strong>：成功推广的用户数量</li>
-            <li><strong>绑定用户</strong>：邀请码绑定的用户</li>
+            <li>
+              <strong>邀请码</strong>：唯一的邀请码字符串
+            </li>
+            <li>
+              <strong>状态</strong>：是否冻结
+            </li>
+            <li>
+              <strong>推广次数</strong>：成功推广的用户数量
+            </li>
+            <li>
+              <strong>绑定用户</strong>：邀请码绑定的用户
+            </li>
           </ul>
         </section>
 
@@ -80,8 +88,12 @@ const HELP_CONTENTS: Record<
             通知管理模块允许您向用户发送两种类型的通知：
           </p>
           <ul className="list-disc pl-4 mt-2 space-y-1 text-muted-foreground">
-            <li><strong>站内信</strong>：一般性的消息通知</li>
-            <li><strong>版本更新</strong>：应用版本更新提示</li>
+            <li>
+              <strong>站内信</strong>：一般性的消息通知
+            </li>
+            <li>
+              <strong>版本更新</strong>：应用版本更新提示
+            </li>
           </ul>
         </section>
 
@@ -89,7 +101,11 @@ const HELP_CONTENTS: Record<
           <h3 className="font-semibold text-base mb-2">发送站内信</h3>
           <ol className="list-decimal pl-4 mt-2 space-y-1 text-muted-foreground">
             <li>点击"站内信"标签页</li>
-            <li>填写<strong>标题</strong>和<strong>内容</strong></li>
+            <li>
+              填写<strong>标题</strong>和<strong>内容</strong>
+              <br />
+              内容中超链接的格式为 [Click here to join FaithTime’s Discord Community](https://discord.gg/GDHzvamn7a)
+            </li>
             <li>设置接收规则（如全部用户或特定用户）</li>
             <li>点击发送按钮</li>
           </ol>
@@ -99,9 +115,15 @@ const HELP_CONTENTS: Record<
           <h3 className="font-semibold text-base mb-2">发布版本更新</h3>
           <ol className="list-decimal pl-4 mt-2 space-y-1 text-muted-foreground">
             <li>点击"版本更新"标签页</li>
-            <li>输入<strong>版本号</strong>（例如 1.0.1）</li>
-            <li>填写<strong>更新日志</strong>，描述更新内容</li>
-            <li>选择是否<strong>强制更新</strong></li>
+            <li>
+              输入<strong>版本号</strong>（例如 1.0.1）
+            </li>
+            <li>
+              填写<strong>更新日志</strong>，描述更新内容
+            </li>
+            <li>
+              选择是否<strong>强制更新</strong>
+            </li>
             <li>提供下载链接或其他必要信息</li>
             <li>点击发布按钮</li>
           </ol>
@@ -140,4 +162,3 @@ export function PageHelper() {
     </Sheet>
   );
 }
-
