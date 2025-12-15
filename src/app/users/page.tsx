@@ -24,6 +24,7 @@ interface Timestamp {
 
 interface UserProfile {
   userId?: string;
+  id?: string;
   email?: string;
   username?: string;
   avatarUrl?: string;
@@ -370,7 +371,7 @@ export default function UsersPage() {
                     <div>
                       <Label className="text-muted-foreground">用户ID</Label>
                       <p className="font-mono text-sm mt-1">
-                        {userProfile.userId || "N/A"}
+                        {userProfile.userId || userProfile.id || "N/A"}
                       </p>
                     </div>
                     <div>
@@ -432,12 +433,6 @@ export default function UsersPage() {
                       <div>
                         <Label className="text-muted-foreground">性别</Label>
                         <p className="text-sm mt-1">{userProfile.gender}</p>
-                      </div>
-                    )}
-                    {userProfile.faithValue !== undefined && (
-                      <div>
-                        <Label className="text-muted-foreground">信心值</Label>
-                        <p className="text-sm mt-1">{userProfile.faithValue}</p>
                       </div>
                     )}
                     {userProfile.avatarUrl && (
