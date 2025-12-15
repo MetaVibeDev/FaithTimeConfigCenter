@@ -11,7 +11,7 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Code, BotMessageSquare, Bell, Database } from "lucide-react";
+import { Code, BotMessageSquare, Bell, Database, User } from "lucide-react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -58,6 +58,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 <Link href="/database">
                   <Database />
                   <span>帖子数据展示</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === "/users"}
+              >
+                <Link href="/users">
+                  <User />
+                  <span>用户管理</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

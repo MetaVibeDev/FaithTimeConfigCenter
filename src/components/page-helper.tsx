@@ -185,6 +185,55 @@ const HELP_CONTENTS: Record<
       </div>
     ),
   },
+  "/users": {
+    title: "用户管理说明",
+    description: "了解如何查询和管理用户信息",
+    content: (
+      <div className="space-y-6 text-sm">
+        <section>
+          <h3 className="font-semibold text-base mb-2">功能概览</h3>
+          <p className="text-muted-foreground">
+            用户管理模块用于查询用户详细信息和管理用户的VIP状态。
+          </p>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">查询用户信息</h3>
+          <ol className="list-decimal pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li>在"查询用户信息"卡片中输入用户ID或邮箱（可选）</li>
+            <li>如果输入邮箱，系统会自动通过邮箱获取用户ID后再查询</li>
+            <li>如果不输入任何内容，将查询当前登录用户的信息</li>
+            <li>点击"查询"按钮或按Enter键执行查询</li>
+            <li>查询成功后，用户详细信息将显示在下方</li>
+          </ol>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">管理VIP状态</h3>
+          <p className="text-muted-foreground">
+            查询到用户信息后，可以在"VIP状态管理"卡片中为用户赠送或取消VIP：
+          </p>
+          <ol className="list-decimal pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li>切换"VIP状态"开关来开启或关闭VIP</li>
+            <li>如果开启VIP，需要设置VIP时长（天数）</li>
+            <li>系统会自动计算VIP到期时间</li>
+            <li>点击"赠送VIP"或"取消VIP"按钮完成操作</li>
+          </ol>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">注意事项</h3>
+          <ul className="list-disc pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li>查询用户时，用户ID通过Headers中的UserId字段传递</li>
+            <li>支持通过邮箱查询，系统会自动将邮箱转换为用户ID</li>
+            <li>VIP时长必须大于0天才能赠送VIP</li>
+            <li>更新VIP状态后，用户信息会自动刷新</li>
+            <li>如果查询失败，请检查用户ID或邮箱是否正确</li>
+          </ul>
+        </section>
+      </div>
+    ),
+  },
 };
 
 export function PageHelper() {

@@ -43,6 +43,11 @@ const nextConfig: NextConfig = {
           "https://main-service-prod.metavibe-api.com/notification/:path*",
         // "http://localhost:5000/notification/:path*",
       },
+      {
+        source: "/api/auth/:path*",
+        destination: "https://main-service-prod.metavibe-api.com/auth/:path*",
+        // destination: "http://localhost:5000/auth/:path*",
+      },
     ];
   },
 };
