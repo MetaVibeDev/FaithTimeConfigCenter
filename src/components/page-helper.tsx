@@ -104,7 +104,8 @@ const HELP_CONTENTS: Record<
             <li>
               填写<strong>标题</strong>和<strong>内容</strong>
               <br />
-              内容中超链接的格式为 [Click here to join FaithTime’s Discord Community](https://discord.gg/GDHzvamn7a)
+              内容中超链接的格式为 [Click here to join FaithTime’s Discord
+              Community](https://discord.gg/GDHzvamn7a)
             </li>
             <li>设置接收规则（如全部用户或特定用户）</li>
             <li>点击发送按钮</li>
@@ -127,6 +128,59 @@ const HELP_CONTENTS: Record<
             <li>提供下载链接或其他必要信息</li>
             <li>点击发布按钮</li>
           </ol>
+        </section>
+      </div>
+    ),
+  },
+  "/database": {
+    title: "帖子数据展示说明",
+    description: "了解如何搜索和管理帖子数据",
+    content: (
+      <div className="space-y-6 text-sm">
+        <section>
+          <h3 className="font-semibold text-base mb-2">功能概览</h3>
+          <p className="text-muted-foreground">
+            帖子数据展示模块用于搜索和管理posts表中的帖子数据。页面加载时会自动显示最新的50条帖子记录。
+          </p>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">默认展示</h3>
+          <p className="text-muted-foreground">
+            页面打开时会自动加载并显示posts表中按post_id降序排列的最新50条记录。您也可以点击"显示最新50条"按钮重新加载。
+          </p>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">搜索帖子</h3>
+          <ol className="list-decimal pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li>在搜索框中输入关键词（会搜索content字段）</li>
+            <li>点击"搜索"按钮或按Enter键执行搜索</li>
+            <li>搜索结果会以表格形式显示在下方（最多显示100条）</li>
+          </ol>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">管理公开状态</h3>
+          <p className="text-muted-foreground">
+            在搜索结果表格的"操作"列中，您可以使用开关切换每个帖子的is_public状态：
+          </p>
+          <ul className="list-disc pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li>开关打开（绿色）：is_public = true，帖子公开</li>
+            <li>开关关闭（灰色）：is_public = false，帖子不公开</li>
+            <li>切换后状态会立即保存到数据库</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 className="font-semibold text-base mb-2">注意事项</h3>
+          <ul className="list-disc pl-4 mt-2 space-y-1 text-muted-foreground">
+            <li>搜索不区分大小写</li>
+            <li>搜索结果最多返回100条记录</li>
+            <li>如果搜索失败，错误信息会显示在结果区域</li>
+            <li>NULL值会显示为"NULL"字符串</li>
+            <li>更新is_public状态时，请等待操作完成，避免重复点击</li>
+          </ul>
         </section>
       </div>
     ),
