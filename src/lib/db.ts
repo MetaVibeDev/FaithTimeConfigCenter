@@ -28,4 +28,3 @@ function getDbConfig() {
 
 // 创建数据库连接池
 export const pool = new Pool(getDbConfig());
-

@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, Database, Search, ChevronRight } from "lucide-react";
+import { Loader2, Database, Search, ChevronRight, Ban } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface QueryResult {
@@ -43,6 +43,8 @@ export default function DatabasePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [blacklistUserId, setBlacklistUserId] = useState("");
+  const [isAddingBlacklist, setIsAddingBlacklist] = useState(false);
   const { toast } = useToast();
 
   // 加载默认数据（支持分页）
@@ -298,6 +300,54 @@ export default function DatabasePage() {
     [result, toast]
   );
 
+  // 添加到黑名单
+  const handleAddToBlacklist = useCallback(async () => {
+    if (!blacklistUserId.trim()) {
+      toast({
+        title: "错误",
+        description: "请输入用户ID",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAddingBlacklist(true);
+
+    try {
+      const response = await fetch("/api/db/blacklist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: blacklistUserId.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: "添加成功",
+          description: `用户 ${blacklistUserId} 已添加到黑名单`,
+        });
+        setBlacklistUserId("");
+      } else {
+        toast({
+          title: "添加失败",
+          description: data.error || "未知错误",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "错误",
+        description: error.message || "网络错误",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAddingBlacklist(false);
+    }
+  }, [blacklistUserId, toast]);
+
   // 页面加载时自动加载默认数据
   useEffect(() => {
     loadDefaultData();
@@ -369,6 +419,51 @@ export default function DatabasePage() {
                     </>
                   ) : (
                     "显示最新50条"
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Ban className="h-5 w-5" />
+                添加到黑名单
+              </CardTitle>
+              <CardDescription>
+                输入用户ID，将该用户添加到黑名单
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="输入用户ID..."
+                  value={blacklistUserId}
+                  onChange={(e) => setBlacklistUserId(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleAddToBlacklist();
+                    }
+                  }}
+                  disabled={isAddingBlacklist}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={handleAddToBlacklist}
+                  disabled={isAddingBlacklist || !blacklistUserId.trim()}
+                  variant="destructive"
+                >
+                  {isAddingBlacklist ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      添加中...
+                    </>
+                  ) : (
+                    <>
+                      <Ban className="mr-2 h-4 w-4" />
+                      添加到黑名单
+                    </>
                   )}
                 </Button>
               </div>
