@@ -7,6 +7,7 @@ export type InvitationCode = {
   redeemedByUserIds: string[];
   bindingDate?: string | null;
   level?: number;
+  note?: string; // 备注字段，存储在 Next.js 后端
 };
 
 export type SimpleUserInfo = {

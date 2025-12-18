@@ -26,6 +26,7 @@ export function InvitationTable() {
             <TableHead>绑定日期</TableHead>
             <TableHead>等级</TableHead>
             <TableHead className="text-right">兑换次数</TableHead>
+            <TableHead className="w-[200px]">备注</TableHead>
             <TableHead className="text-center w-[100px]">冻结</TableHead>
             <TableHead className="text-right w-[100px]">操作</TableHead>
           </TableRow>
@@ -33,7 +34,7 @@ export function InvitationTable() {
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={8} className="text-center h-24">
+              <TableCell colSpan={9} className="text-center h-24">
                 正在加载...
               </TableCell>
             </TableRow>
@@ -43,7 +44,7 @@ export function InvitationTable() {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={8} className="text-center h-24">
+              <TableCell colSpan={9} className="text-center h-24">
                 沒有可用的邀請碼。
               </TableCell>
             </TableRow>
@@ -53,4 +54,3 @@ export function InvitationTable() {
     </div>
   );
 }
-

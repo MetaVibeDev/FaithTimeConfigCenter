@@ -12,11 +12,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import type { InvitationCode } from "@/lib/types";
-import { Link2, MoreHorizontal, Users } from "lucide-react";
+import { Link2, MoreHorizontal, Users, Check, X, Edit } from "lucide-react";
 import { useInvitationStore } from "@/store/invitation-store";
 import { UserPopover } from "./user-popover";
+import { useState } from "react";
 
 interface InvitationTableRowProps {
   code: InvitationCode;
@@ -31,7 +33,12 @@ export function InvitationTableRow({ code }: InvitationTableRowProps) {
     setIsViewUsersOpen,
     deactivateCode,
     fetchPromotedUsers,
+    updateNote,
   } = useInvitationStore();
+
+  const [isEditingNote, setIsEditingNote] = useState(false);
+  const [noteValue, setNoteValue] = useState(code.note || "");
+  const [isSavingNote, setIsSavingNote] = useState(false);
 
   const handleDeactivateCode = async () => {
     try {
@@ -69,15 +76,38 @@ export function InvitationTableRow({ code }: InvitationTableRowProps) {
     }
   };
 
+  const handleSaveNote = async () => {
+    setIsSavingNote(true);
+    try {
+      await updateNote(code.id, noteValue);
+      setIsEditingNote(false);
+      toast({
+        title: "备注已保存",
+        description: "备注信息已成功保存。",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "保存失败",
+        description: "无法保存备注信息。",
+      });
+    } finally {
+      setIsSavingNote(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setNoteValue(code.note || "");
+    setIsEditingNote(false);
+  };
+
   return (
     <TableRow>
       <TableCell className="font-mono font-medium">{code.code}</TableCell>
       <TableCell>
         <Badge
           variant={code.frozen ? "destructive" : "outline"}
-          className={
-            !code.frozen ? "border-green-500 text-green-700" : ""
-          }
+          className={!code.frozen ? "border-green-500 text-green-700" : ""}
         >
           {code.frozen ? "已冻结" : "激活"}
         </Badge>
@@ -94,6 +124,58 @@ export function InvitationTableRow({ code }: InvitationTableRowProps) {
       </TableCell>
       <TableCell>{code.level || "N/A"}</TableCell>
       <TableCell className="text-right">{code.redemptionCount}</TableCell>
+      <TableCell>
+        {isEditingNote ? (
+          <div className="flex items-center gap-1">
+            <Input
+              value={noteValue}
+              onChange={(e) => setNoteValue(e.target.value)}
+              placeholder="输入备注..."
+              className="h-8 text-sm"
+              disabled={isSavingNote}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSaveNote();
+                } else if (e.key === "Escape") {
+                  handleCancelEdit();
+                }
+              }}
+            />
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8"
+              onClick={handleSaveNote}
+              disabled={isSavingNote}
+            >
+              <Check className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8"
+              onClick={handleCancelEdit}
+              disabled={isSavingNote}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 group">
+            <span className="text-sm text-muted-foreground truncate flex-1">
+              {code.note || "未填写"}
+            </span>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={() => setIsEditingNote(true)}
+            >
+              <Edit className="h-3 w-3" />
+            </Button>
+          </div>
+        )}
+      </TableCell>
       <TableCell className="flex justify-center items-center h-full pt-4">
         <Switch
           checked={code.frozen}
@@ -136,4 +218,3 @@ export function InvitationTableRow({ code }: InvitationTableRowProps) {
     </TableRow>
   );
 }
-

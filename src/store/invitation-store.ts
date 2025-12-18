@@ -34,6 +34,9 @@ interface InvitationStore {
   popoverUserInfo: SimpleUserInfo | null;
   isLoadingPopover: boolean;
 
+  // 备注相关
+  notes: Record<string, string>; // 邀请码ID -> 备注内容
+
   // Actions
   setCodes: (codes: InvitationCode[]) => void;
   setSearchQuery: (query: string) => void;
@@ -54,6 +57,8 @@ interface InvitationStore {
   bindUser: (code: string, email: string) => Promise<void>;
   fetchPromotedUsers: (code: string) => Promise<void>;
   fetchUserProfile: (userId: string) => Promise<void>;
+  fetchNotes: () => Promise<void>;
+  updateNote: (codeId: string, note: string) => Promise<void>;
 
   // Computed
   getFilteredCodes: () => InvitationCode[];
@@ -74,6 +79,7 @@ export const useInvitationStore = create<InvitationStore>((set, get) => ({
   popoverUserId: null,
   popoverUserInfo: null,
   isLoadingPopover: false,
+  notes: {},
 
   // Setters
   setCodes: (codes) => set({ codes }),
@@ -109,6 +115,9 @@ export const useInvitationStore = create<InvitationStore>((set, get) => ({
         })
       );
       set({ codes: fetchedCodes });
+
+      // 同时加载备注
+      await get().fetchNotes();
     } catch (error) {
       console.error("Failed to fetch invitation codes:", error);
       throw error;
@@ -182,6 +191,56 @@ export const useInvitationStore = create<InvitationStore>((set, get) => ({
       throw error;
     } finally {
       set({ isLoadingPopover: false });
+    }
+  },
+
+  fetchNotes: async () => {
+    try {
+      const response = await fetch("/api/notes");
+      const data = await response.json();
+      if (data.success) {
+        set({ notes: data.notes });
+        // 将备注合并到邀请码数据中
+        set((state) => ({
+          codes: state.codes.map((code) => ({
+            ...code,
+            note: data.notes[code.id] || "",
+          })),
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to fetch notes:", error);
+    }
+  },
+
+  updateNote: async (codeId: string, note: string) => {
+    try {
+      const response = await fetch("/api/notes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ codeId, note }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        // 更新本地状态
+        set((state) => ({
+          notes: {
+            ...state.notes,
+            [codeId]: note,
+          },
+          codes: state.codes.map((code) =>
+            code.id === codeId ? { ...code, note } : code
+          ),
+        }));
+      } else {
+        throw new Error(data.error || "保存备注失败");
+      }
+    } catch (error) {
+      console.error("Failed to update note:", error);
+      throw error;
     }
   },
 
