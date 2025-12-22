@@ -48,6 +48,11 @@ const nextConfig: NextConfig = {
         destination: "https://main-service-prod.metavibe-api.com/auth/:path*",
         // destination: "http://localhost:5000/auth/:path*",
       },
+      {
+        source: "/api/assets/:path*",
+        destination: "https://main-service-prod.metavibe-api.com/assets/:path*",
+        // destination: "http://localhost:5000/assets/:path*",
+      },
     ];
   },
 };

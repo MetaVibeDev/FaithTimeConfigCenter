@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Loader2, User, Search, Crown } from "lucide-react";
+import { Loader2, User, Search, Crown, Gem } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
 
@@ -51,6 +51,8 @@ export default function UsersPage() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isPremium, setIsPremium] = useState(false);
   const [premiumDuration, setPremiumDuration] = useState(30);
+  const [spiritualStoneAmount, setSpiritualStoneAmount] = useState(0);
+  const [rewardingStone, setRewardingStone] = useState(false);
   const { toast } = useToast();
 
   // 判断输入的是邮箱还是用户ID
@@ -305,6 +307,86 @@ export default function UsersPage() {
     }
   }, [actualUserId, userProfile, isPremium, premiumDuration, toast]);
 
+  // 赠送灵石
+  const handleRewardSpiritualStone = useCallback(async () => {
+    if (!userProfile) {
+      toast({
+        title: "错误",
+        description: "请先查询用户信息",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (spiritualStoneAmount <= 0) {
+      toast({
+        title: "错误",
+        description: "灵石数量必须大于0",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setRewardingStone(true);
+
+    try {
+      const requestBody = {
+        experience: 0,
+        spiritualStone: spiritualStoneAmount,
+        source: "inner",
+      };
+
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        Accept: "text/plain",
+      };
+
+      // 使用实际查询时使用的用户ID（可能是输入的ID或通过邮箱获取的subId）
+      const targetUserId = actualUserId || userProfile.userId;
+      if (targetUserId) {
+        headers["UserId"] = targetUserId;
+      }
+
+      const response = await fetch("/api/assets/reward", {
+        method: "POST",
+        headers,
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => "");
+        let errorMessage = `赠送失败: ${response.status} ${response.statusText}`;
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          if (errorText) {
+            errorMessage = errorText || errorMessage;
+          }
+        }
+        throw new Error(errorMessage);
+      }
+
+      const responseText = await response.text();
+
+      toast({
+        title: "赠送成功",
+        description: `已为用户赠送 ${spiritualStoneAmount} 灵石`,
+      });
+
+      // 重置输入框
+      setSpiritualStoneAmount(0);
+    } catch (error: any) {
+      toast({
+        title: "赠送失败",
+        description: error.message || "网络错误，请稍后再试",
+        variant: "destructive",
+      });
+    } finally {
+      setRewardingStone(false);
+    }
+  }, [actualUserId, userProfile, spiritualStoneAmount, toast]);
+
   return (
     <PasswordGate>
       <DashboardLayout>
@@ -508,6 +590,53 @@ export default function UsersPage() {
                       <>
                         <Crown className="mr-2 h-4 w-4" />
                         {isPremium ? "赠送VIP" : "取消VIP"}
+                      </>
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Gem className="h-5 w-5 text-blue-500" />
+                    赠送灵石
+                  </CardTitle>
+                  <CardDescription>为用户赠送灵石</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="spiritual-stone-amount">灵石数量</Label>
+                    <Input
+                      id="spiritual-stone-amount"
+                      type="number"
+                      min="1"
+                      value={spiritualStoneAmount || ""}
+                      onChange={(e) =>
+                        setSpiritualStoneAmount(parseInt(e.target.value) || 0)
+                      }
+                      disabled={rewardingStone}
+                      placeholder="请输入要赠送的灵石数量"
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      将为用户赠送指定数量的灵石
+                    </p>
+                  </div>
+
+                  <Button
+                    onClick={handleRewardSpiritualStone}
+                    disabled={rewardingStone || spiritualStoneAmount <= 0}
+                    className="w-full"
+                  >
+                    {rewardingStone ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        赠送中...
+                      </>
+                    ) : (
+                      <>
+                        <Gem className="mr-2 h-4 w-4" />
+                        赠送灵石
                       </>
                     )}
                   </Button>
